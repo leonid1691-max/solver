@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🌸</title>
+
+<meta property="og:title" content="🌸">
+<meta property="og:description" content="">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #8fd8ff;
+}
+
+#game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            to bottom,
+            #83d5ff 0%,
+            #d9f5ff 64%,
+            #79c85e 64%,
+            #62b44d 100%
+        );
+}
+
+/* =========================
+   ОБЛАКА
+========================= */
+
+.cloud {
+    position: absolute;
+    width: 150px;
+    height: 50px;
+    background: white;
+    border-radius: 50px;
+    opacity: .8;
+    z-index: 1;
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+.cloud::before {
+    width: 65px;
+    height: 65px;
+    left: 25px;
+    top: -30px;
+}
+
+.cloud::after {
+    width: 75px;
+    height: 75px;
+    right: 20px;
+    top: -38px;
+}
+
+.cloud1 {
+    top: 90px;
+    left: 8%;
+}
+
+.cloud2 {
+    top: 170px;
+    right: 10%;
+    transform: scale(.7);
+}
+
+/* =========================
+   ПРОГРЕСС
+========================= */
+
+#progressBox {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92%, 700px);
+    z-index: 100;
+}
+
+#progressText {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 7px;
+    text-shadow: 0 1px 2px white;
+}
+
+.progressOuter {
+    width: 100%;
+    height: 12px;
+    background: rgba(255,255,255,.7);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,.15);
+}
+
+#progressInner {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg,#ff72b2,#ffacd1);
+    border-radius: 20px;
+    transition: width .5s ease;
+}
+
+/* =========================
+   МИР
+========================= */
+
+#world {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6500px;
+    height: 100%;
+    transition: transform 1s ease;
+}
+
+.ground {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 6500px;
+    height: 36%;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #6fc45a,
+            #6fc45a 20px,
+            #63b650 20px,
+            #63b650 40px
+        );
+}
+
+.path {
+    position: absolute;
+    left: 0;
+    bottom: 12%;
+    width: 6500px;
+    height: 125px;
+    background: #d8b57d;
+    border-top: 7px solid #c79d62;
+    border-bottom: 7px solid #c79d62;
+}
+
+/* =========================
+   ОБЫЧНЫЕ ДВЕРИ
+========================= */
+
+.door {
+    position: absolute;
+    bottom: calc(12% + 125px);
+
+    width: 155px;
+    height: 245px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #673b25,
+            #a36a42,
+            #75452c
+        );
+
+    border: 9px solid #4d2c1d;
+    border-radius: 18px 18px 5px 5px;
+
+    box-shadow:
+        0 12px 20px rgba(0,0,0,.25),
+        inset 0 0 20px rgba(0,0,0,.2);
+
+    transform-origin: left center;
+
+    transition:
+        transform .8s ease;
+
+    z-index: 5;
+}
+
+.door.open {
+    transform: perspective(600px) rotateY(-82deg);
+}
+
+.doorNumber {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+
+    text-align: center;
+
+    color: #ffe9ae;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.knob {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+
+    width: 22px;
+    height: 22px;
+
+    background: gold;
+    border-radius: 50%;
+
+    box-shadow:
+        0 2px 4px rgba(0,0,0,.4);
+}
+
+/*
+   10 дверей.
+   Каждая следующая немного дальше предыдущей.
+*/
+
+.door1  { left: 650px; }
+.door2  { left: 1150px; }
+.door3  { left: 1650px; }
+.door4  { left: 2150px; }
+.door5  { left: 2650px; }
+.door6  { left: 3150px; }
+.door7  { left: 3650px; }
+.door8  { left: 4150px; }
+.door9  { left: 4650px; }
+.door10 { left: 5150px; }
+
+/* =========================
+   ФИНИШНАЯ ДВЕРЬ
+========================= */
+
+.finishDoor {
+    position: absolute;
+
+    left: 5750px;
+
+    bottom: calc(12% + 125px);
+
+    width: 240px;
+    height: 330px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #71369a,
+            #bd70e6,
+            #71369a
+        );
+
+    border: 12px solid #4c2169;
+
+    border-radius: 25px 25px 8px 8px;
+
+    box-shadow:
+        0 0 30px rgba(221,120,255,.9),
+        0 15px 30px rgba(0,0,0,.3);
+
+    z-index: 5;
+}
+
+.finishDoor::before {
+    content: "ФИНИШ";
+
+    position: absolute;
+
+    top: 25px;
+    left: 0;
+    right: 0;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 27px;
+    font-weight: bold;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.5);
+}
+
+.finishDoor::after {
+    content: "🌸";
+
+    position: absolute;
+
+    left: 50%;
+    top: 52%;
+
+    transform: translate(-50%,-50%);
+
+    font-size: 72px;
+}
+
+.finishKnob {
+    position: absolute;
+
+    right: 22px;
+    top: 53%;
+
+    width: 25px;
+    height: 25px;
+
+    background: gold;
+    border-radius: 50%;
+}
+
+/* =========================
+   ЦВЕТОЧЕК
+========================= */
+
+#girl {
+    position: absolute;
+
+    left: 100px;
+
+    bottom: calc(12% + 125px);
+
+    width: 100px;
+    height: 190px;
+
+    z-index: 20;
+
+    transition:
+        left 1.3s ease-in-out;
+}
+
+/* Надпись */
+
+.nameTag {
+    position: absolute;
+
+    left: 50%;
+    top: -43px;
+
+    transform: translateX(-50%);
+
+    padding: 5px 13px;
+
+    background: rgba(255,255,255,.95);
+
+    color: #d94b92;
+
+    border-radius: 20px;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    box-shadow:
+        0 3px 8px rgba(0,0,0,.15);
+}
+
+.nameTag::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: -7px;
+
+    transform: translateX(-50%);
+
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 8px solid white;
+}
+
+/* Голова */
+
+.head {
+    position: absolute;
+
+    width: 76px;
+    height: 80px;
+
+    left: 12px;
+    top: 0;
+
+    background: #f2c19b;
+
+    border-radius: 48% 48% 45% 45%;
+
+    border: 3px solid #d89d73;
+
+    z-index: 3;
+}
+
+/* Волосы */
+
+.hair {
+    position: absolute;
+
+    width: 84px;
+    height: 65px;
+
+    left: 8px;
+    top: -12px;
+
+    background: #f5d35b;
+
+    border-radius: 50% 55% 30% 30%;
+
+    z-index: 4;
+}
+
+.hair::before,
+.hair::after {
+    content: "";
+
+    position: absolute;
+
+    background: #f5d35b;
+}
+
+.hair::before {
+    width: 30px;
+    height: 80px;
+
+    left: -4px;
+    top: 25px;
+
+    border-radius: 20px;
+}
+
+.hair::after {
+    width: 30px;
+    height: 80px;
+
+    right: -4px;
+    top: 25px;
+
+    border-radius: 20px;
+}
+
+/* Глаза */
+
+.eye {
+    position: absolute;
+
+    width: 18px;
+    height: 23px;
+
+    background: white;
+
+    border: 2px solid #333;
+
+    border-radius: 50%;
+
+    top: 28px;
+}
+
+.eye::after {
+    content: "";
+
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    background: #222;
+
+    border-radius: 50%;
+
+    left: 4px;
+    top: 6px;
+}
+
+.eye.left {
+    left: 18px;
+}
+
+.eye.right {
+    right: 18px;
+}
+
+/* Рот */
+
+.mouth {
+    position: absolute;
+
+    width: 25px;
+    height: 12px;
+
+    left: 25px;
+    top: 55px;
+
+    border-bottom: 3px solid #8c3d3d;
+
+    border-radius: 50%;
+}
+
+/* Тело */
+
+.body {
+    position: absolute;
+
+    width: 62px;
+    height: 75px;
+
+    left: 19px;
+    top: 75px;
+
+    background: #ff7db5;
+
+    border-radius: 25px 25px 12px 12px;
+
+    border: 3px solid #d95f94;
+}
+
+/* Руки */
+
+.arm {
+    position: absolute;
+
+    width: 20px;
+    height: 62px;
+
+    top: 82px;
+
+    background: #f2c19b;
+
+    border-radius: 15px;
+}
+
+.arm.left {
+    left: 8px;
+}
+
+.arm.right {
+    right: 8px;
+}
+
+/* Ноги */
+
+.leg {
+    position: absolute;
+
+    width: 22px;
+    height: 55px;
+
+    top: 142px;
+
+    background: #f2c19b;
+
+    border-radius: 15px;
+}
+
+.leg.left {
+    left: 25px;
+}
+
+.leg.right {
+    right: 25px;
+}
+
+/* Ходьба */
+
+.walking .leg.left {
+    animation: walkLeft .35s infinite alternate;
+}
+
+.walking .leg.right {
+    animation: walkRight .35s infinite alternate;
+}
+
+.walking .arm.left {
+    animation: armLeft .35s infinite alternate;
+}
+
+.walking .arm.right {
+    animation: armRight .35s infinite alternate;
+}
+
+@keyframes walkLeft {
+    from {
+        transform: rotate(15deg);
+    }
+
+    to {
+        transform: rotate(-15deg);
+    }
+}
+
+@keyframes walkRight {
+    from {
+        transform: rotate(-15deg);
+    }
+
+    to {
+        transform: rotate(15deg);
+    }
+}
+
+@keyframes armLeft {
+    from {
+        transform: rotate(-15deg);
+    }
+
+    to {
+        transform: rotate(15deg);
+    }
+}
+
+@keyframes armRight {
+    from {
+        transform: rotate(15deg);
+    }
+
+    to {
+        transform: rotate(-15deg);
+    }
+}
+
+/* =========================
+   ВОПРОС
+========================= */
+
+#questionBox {
+    position: absolute;
+
+    left: 50%;
+    top: 52px;
+
+    transform: translateX(-50%);
+
+    width: min(92%, 720px);
+
+    padding: 18px;
+
+    background: rgba(255,255,255,.96);
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.2);
+
+    z-index: 80;
+
+    text-align: center;
+}
+
+#question {
+    font-size: 21px;
+    font-weight: bold;
+
+    line-height: 1.35;
+
+    margin-bottom: 15px;
+}
+
+.answers {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+}
+
+.answer {
+    border: none;
+
+    padding: 13px;
+
+    border-radius: 15px;
+
+    background: #f0e3ff;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.answer:hover {
+    transform: translateY(-2px);
+
+    background: #ddc7ff;
+}
+
+.answer.correct {
+    background: #8be28b;
+}
+
+.answer.wrong {
+    background: #ff9898;
+}
+
+.answer:disabled {
+    cursor: default;
+}
+
+/* =========================
+   СООБЩЕНИЕ
+========================= */
+
+#message {
+    position: absolute;
+
+    left: 50%;
+    bottom: 25px;
+
+    transform: translateX(-50%);
+
+    z-index: 90;
+
+    padding: 12px 20px;
+
+    border-radius: 15px;
+
+    background: rgba(0,0,0,.75);
+
+    color: white;
+
+    font-size: 17px;
+
+    opacity: 0;
+
+    transition: .3s;
+
+    text-align: center;
+
+    max-width: 90%;
+}
+
+#message.show {
+    opacity: 1;
+}
+
+/* =========================
+   ФИНАЛ
+========================= */
+
+#finish {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(25,20,45,.9);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 200;
+
+    padding: 20px;
+}
+
+.finishCard {
+    width: min(90%, 600px);
+
+    padding: 40px 30px;
+
+    background: white;
+
+    border-radius: 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.4);
+
+    animation: appear .7s ease;
+}
+
+.finishTitle {
+    font-size: 29px;
+
+    font-weight: bold;
+
+    color: #d94b92;
+
+    margin-bottom: 25px;
+}
+
+.finishText {
+    font-size: 20px;
+
+    line-height: 1.5;
+
+    color: #333;
+}
+
+@keyframes appear {
+
+    from {
+        transform: scale(.7);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+}
+
+/* =========================
+   МОБИЛЬНЫЙ ЭКРАН
+========================= */
+
+@media (max-width: 600px) {
+
+    #questionBox {
+        top: 45px;
+        padding: 14px;
+    }
+
+    #question {
+        font-size: 17px;
+    }
+
+    .answer {
+        font-size: 13px;
+        padding: 10px 7px;
+    }
+
+    .nameTag {
+        font-size: 14px;
+    }
+
+    .finishTitle {
+        font-size: 24px;
+    }
+
+    .finishText {
+        font-size: 17px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <!-- ПРОГРЕСС -->
+
+    <div id="progressBox">
+
+        <div id="progressText">
+            Вопрос 1 из 10
+        </div>
+
+        <div class="progressOuter">
+            <div id="progressInner"></div>
+        </div>
+
+    </div>
+
+
+    <!-- ВОПРОСЫ -->
+
+    <div id="questionBox">
+
+        <div id="question"></div>
+
+        <div class="answers">
+
+            <button class="answer"></button>
+            <button class="answer"></button>
+            <button class="answer"></button>
+            <button class="answer"></button>
+
+        </div>
+
+    </div>
+
+
+    <!-- МИР -->
+
+    <div id="world">
+
+        <div class="ground"></div>
+
+        <div class="path"></div>
+
+
+        <!-- ДВЕРЬ 1 -->
+
+        <div class="door door1">
+
+            <div class="doorNumber">1</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 2 -->
+
+        <div class="door door2">
+
+            <div class="doorNumber">2</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 3 -->
+
+        <div class="door door3">
+
+            <div class="doorNumber">3</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 4 -->
+
+        <div class="door door4">
+
+            <div class="doorNumber">4</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 5 -->
+
+        <div class="door door5">
+
+            <div class="doorNumber">5</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 6 -->
+
+        <div class="door door6">
+
+            <div class="doorNumber">6</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 7 -->
+
+        <div class="door door7">
+
+            <div class="doorNumber">7</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 8 -->
+
+        <div class="door door8">
+
+            <div class="doorNumber">8</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 9 -->
+
+        <div class="door door9">
+
+            <div class="doorNumber">9</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ДВЕРЬ 10 -->
+
+        <div class="door door10">
+
+            <div class="doorNumber">10</div>
+            <div class="knob"></div>
+
+        </div>
+
+
+        <!-- ФИНИШ -->
+
+        <div class="finishDoor">
+
+            <div class="finishKnob"></div>
+
+        </div>
+
+
+        <!-- ЦВЕТОЧЕК -->
+
+        <div id="girl">
+
+            <div class="nameTag">
+                Цветочек 🌸
+            </div>
+
+            <div class="hair"></div>
+
+            <div class="head">
+
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+
+                <div class="mouth"></div>
+
+            </div>
+
+            <div class="body"></div>
+
+            <div class="arm left"></div>
+            <div class="arm right"></div>
+
+            <div class="leg left"></div>
+            <div class="leg right"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- СООБЩЕНИЕ -->
+
+    <div id="message"></div>
+
+</div>
+
+
+<!-- ФИНАЛЬНЫЙ ЭКРАН -->
+
+<div id="finish">
+
+    <div class="finishCard">
+
+        <div class="finishTitle">
+            🌸 Цветочек, лабиринт пройден! 😘
+        </div>
+
+        <div class="finishText">
+
+            Ну вот, теперь ты знаешь меня ещё немного лучше)<br><br>
+
+            Но я решил оставить тебе последнее задание…<br><br>
+
+            <strong>
+                Что общего у лабиринта и судьбы? 🤔
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   10 ВОПРОСОВ
+========================= */
+
+const questions = [
+
+    {
+        q: "Дашуль, как думаешь, какой завтрак мне нравится больше всего?",
+        a: [
+            "Яичница с беконом 🥓",
+            "Сырники со сметаной",
+            "Бутерброды и кофе — быстро и без заморочек",
+            "Стейк. Потому что почему бы и нет 😂"
+        ],
+        correct: 2
+    },
+
+    {
+        q: "Как думаешь, какую машину я бы выбрал себе?",
+        a: [
+            "BMW",
+            "Mercedes",
+            "Porsche",
+            "MINI Cooper 🚗"
+        ],
+        correct: 1
+    },
+
+    {
+        q: "Дашуль, как меня можно реально обидеть?",
+        a: [
+            "Игнорировать меня",
+            "Обзываться 😂",
+            "Не верить мне",
+            "Сказать: «Ты неправ» — и уйти 😂"
+        ],
+        correct: 3
+    },
+
+    {
+        q: "Как думаешь, что может рассмешить меня даже в плохом настроении?",
+        a: [
+            "Глупая шутка от близкого человека",
+            "Чужой нелепый фейл 😂",
+            "Мем, который идеально попал в ситуацию",
+            "Ты, если начнёшь меня специально бесить"
+        ],
+        correct: 0
+    },
+
+    {
+        q: "Что мне больше всего нравится в девушках?",
+        a: [
+            "Красивые глаза",
+            "Чувство юмора",
+            "Доброта и характер ❤️",
+            "Когда девушка умеет одновременно быть нежной и выносить мне мозг 😂"
+        ],
+        correct: 2
+    },
+
+    {
+        q: "Как думаешь, какой отдых для меня идеальный?",
+        a: [
+            "Море, солнце и вообще ничего не делать",
+            "Поехать куда-нибудь на машине без чёткого плана 🚗",
+            "Дом, вкусная еда, фильм и любимый человек",
+            "Активный отдых, приключения и куча впечатлений"
+        ],
+        correct: 0
+    },
+
+    {
+        q: "Дашуль, что я выберу: спокойный вечер дома или спонтанную поездку куда-нибудь?",
+        a: [
+            "Спокойный вечер дома ❤️",
+            "Спонтанную поездку",
+            "Сначала сказать, что хочу остаться дома, а потом через час самому предложить куда-нибудь поехать 😂",
+            "Мне всё равно, главное — с тобой"
+        ],
+        correct: 3
+    },
+
+    {
+        q: "Как думаешь, какой подарок меня действительно порадует?",
+        a: [
+            "Что-нибудь с юмором 😂",
+            "Аниме-фигурка",
+            "Трусы 🩲",
+            "Любой, потому что главное — внимание ❤️"
+        ],
+        correct: 3
+    },
+
+    {
+        q: "Что меня быстрее всего может выбесить? 😂",
+        a: [
+            "Когда человек долго отвечает",
+            "Когда меня не слушают",
+            "Когда всё идёт не по плану",
+            "Когда человек говорит одно, а делает совершенно другое"
+        ],
+        correct: 1
+    },
+
+    {
+        q: "Дашуль, как думаешь, о чём я мечтаю больше всего?",
+        a: [
+            "О хорошей работе 💼",
+            "О тебе ❤️",
+            "О бананах 🍌",
+            "Побывать на встрече анимешников 🎌"
+        ],
+        correct: 1
+    }
+
+];
+
+
+/* =========================
+   ЭЛЕМЕНТЫ
+========================= */
+
+let currentQuestion = 0;
+
+let moving = false;
+
+const question = document.getElementById("question");
+
+const answers =
+    document.querySelectorAll(".answer");
+
+const girl =
+    document.getElementById("girl");
+
+const world =
+    document.getElementById("world");
+
+const doors =
+    document.querySelectorAll(".door");
+
+const message =
+    document.getElementById("message");
+
+const finish =
+    document.getElementById("finish");
+
+const questionBox =
+    document.getElementById("questionBox");
+
+const progressText =
+    document.getElementById("progressText");
+
+const progressInner =
+    document.getElementById("progressInner");
+
+
+/* =========================
+   ВОПРОС
+========================= */
+
+function showQuestion() {
+
+    if (currentQuestion >= questions.length) {
+
+        goToFinish();
+
+        return;
+    }
+
+    const item =
+        questions[currentQuestion];
+
+    question.textContent =
+        item.q;
+
+    answers.forEach((button,index) => {
+
+        button.textContent =
+            item.a[index];
+
+        button.className =
+            "answer";
+
+        button.disabled =
+            false;
+
+        button.onclick = function() {
+
+            checkAnswer(index);
+
+        };
+
+    });
+
+
+    /*
+       Показываем прогресс.
+    */
+
+    progressText.textContent =
+        `Вопрос ${currentQuestion + 1} из ${questions.length}`;
+
+    const percent =
+        (currentQuestion / questions.length) * 100;
+
+    progressInner.style.width =
+        percent + "%";
+
+}
+
+
+/* =========================
+   ОТВЕТ
+========================= */
+
+function checkAnswer(index) {
+
+    if (moving) {
+        return;
+    }
+
+    const correct =
+        questions[currentQuestion].correct;
+
+    if (index === correct) {
+
+        moving = true;
+
+        answers[index]
+            .classList
+            .add("correct");
+
+        answers.forEach(button => {
+            button.disabled = true;
+        });
+
+        showMessage("Правильно! 😏");
+
+        setTimeout(() => {
+
+            passDoor();
+
+        }, 450);
+
+    } else {
+
+        answers[index]
+            .classList
+            .add("wrong");
+
+        showMessage(
+            getWrongMessage()
+        );
+
+    }
+
+}
+
+
+/* =========================
+   НЕПРАВИЛЬНЫЙ ОТВЕТ
+========================= */
+
+function getWrongMessage() {
+
+    const list = [
+
+        "Не-а 😏 Давай ещё раз.",
+
+        "Цветочек, ты серьёзно? 😂",
+
+        "Кажется, ты меня пока не настолько хорошо знаешь 😁",
+
+        "Попробуй ещё раз 👀",
+
+        "Неправильно! Но я дам тебе второй шанс 😘",
+
+        "Хитро… но нет 😂"
+
+    ];
+
+    return list[
+        Math.floor(
+            Math.random() * list.length
+        )
+    ];
+
+}
+
+
+/* =========================
+   СООБЩЕНИЕ
+========================= */
+
+function showMessage(text) {
+
+    message.textContent =
+        text;
+
+    message.classList.add(
+        "show"
+    );
+
+    setTimeout(() => {
+
+        message.classList.remove(
+            "show"
+        );
+
+    }, 1700);
+
+}
+
+
+/* =========================
+   КАМЕРА
+========================= */
+
+function moveCamera(position) {
+
+    const offset =
+        Math.max(
+            0,
+            position -
+            window.innerWidth * .35
+        );
+
+    world.style.transform =
+        `translateX(-${offset}px)`;
+
+}
+
+
+/* =========================
+   ПРОХОЖДЕНИЕ ДВЕРИ
+========================= */
+
+function passDoor() {
+
+    /*
+       ВАЖНО:
+       currentQuestion = 0 означает дверь 1.
+       currentQuestion = 9 означает дверь 10.
+    */
+
+    const door =
+        doors[currentQuestion];
+
+    if (!door) {
+
+        console.error(
+            "Дверь не найдена:",
+            currentQuestion
+        );
+
+        moving = false;
+
+        return;
+    }
+
+
+    /* Открываем дверь */
+
+    door.classList.add(
+        "open"
+    );
+
+
+    /* Включаем анимацию ходьбы */
+
+    girl.classList.add(
+        "walking"
+    );
+
+
+    /*
+       Получаем реальную позицию двери.
+    */
+
+    const doorLeft =
+        parseFloat(
+            getComputedStyle(door).left
+        );
+
+
+    /*
+       Сначала Цветочек подходит
+       к двери.
+    */
+
+    const beforeDoor =
+        doorLeft - 125;
+
+
+    girl.style.left =
+        beforeDoor + "px";
+
+    moveCamera(
+        beforeDoor
+    );
+
+
+    /*
+       Потом проходит через неё.
+    */
+
+    setTimeout(() => {
+
+        const afterDoor =
+            doorLeft + 90;
+
+        girl.style.left =
+            afterDoor + "px";
+
+        moveCamera(
+            afterDoor
+        );
+
+    }, 1000);
+
+
+    /*
+       После прохождения
+       переходим к следующему вопросу.
+    */
+
+    setTimeout(() => {
+
+        girl.classList.remove(
+            "walking"
+        );
+
+        currentQuestion++;
+
+        moving = false;
+
+        showQuestion();
+
+    }, 2300);
+
+}
+
+
+/* =========================
+   ФИНИШ
+========================= */
+
+function goToFinish() {
+
+    moving = true;
+
+    questionBox.style.display =
+        "none";
+
+
+    /*
+       Заполняем прогресс.
+    */
+
+    progressText.textContent =
+        "Лабиринт пройден! 🌸";
+
+    progressInner.style.width =
+        "100%";
+
+
+    /*
+       Координата перед финишной
+       дверью.
+    */
+
+    const finishDoorPosition =
+        5750;
+
+
+    const beforeFinish =
+        finishDoorPosition - 180;
+
+
+    /*
+       Цветочек идёт к финишу.
+    */
+
+    girl.classList.add(
+        "walking"
+    );
+
+    girl.style.left =
+        beforeFinish + "px";
+
+    moveCamera(
+        beforeFinish
+    );
+
+
+    /*
+       Через некоторое время
+       подходим к двери.
+    */
+
+    setTimeout(() => {
+
+        girl.style.left =
+            (finishDoorPosition + 80) + "px";
+
+        moveCamera(
+            finishDoorPosition
+        );
+
+    }, 1400);
+
+
+    /*
+       Показываем финал.
+    */
+
+    setTimeout(() => {
+
+        girl.classList.remove(
+            "walking"
+        );
+
+        finish.style.display =
+            "flex";
+
+    }, 2900);
+
+}
+
+
+/* =========================
+   ЗАПУСК
+========================= */
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
