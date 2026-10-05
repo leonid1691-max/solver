@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 Цветочек 🌸</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #8fd3ff;
+}
+
+#game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(#8fd3ff 0%, #d9f3ff 65%, #7dcc65 65%, #65b653 100%);
+}
+
+/* Облака */
+
+.cloud {
+    position: absolute;
+    width: 150px;
+    height: 55px;
+    background: white;
+    border-radius: 50px;
+    opacity: .8;
+}
+
+.cloud:before,
+.cloud:after {
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+.cloud:before {
+    width: 70px;
+    height: 70px;
+    left: 25px;
+    top: -30px;
+}
+
+.cloud:after {
+    width: 80px;
+    height: 80px;
+    right: 20px;
+    top: -40px;
+}
+
+.cloud1 {
+    top: 80px;
+    left: 10%;
+}
+
+.cloud2 {
+    top: 160px;
+    right: 10%;
+    transform: scale(.7);
+}
+
+/* Игровая зона */
+
+#world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4000px;
+    transition: transform 1s ease;
+}
+
+.ground {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 4000px;
+    height: 35%;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #6abe55,
+            #6abe55 20px,
+            #62b34d 20px,
+            #62b34d 40px
+        );
+}
+
+/* Дорожка */
+
+.path {
+    position: absolute;
+    left: 0;
+    bottom: 12%;
+    width: 4000px;
+    height: 120px;
+    background: #d6b47b;
+    border-top: 6px solid #c49d65;
+    border-bottom: 6px solid #c49d65;
+}
+
+/* Двери */
+
+.door {
+    position: absolute;
+    bottom: calc(12% + 120px);
+    width: 150px;
+    height: 240px;
+    background: linear-gradient(90deg, #70452d, #9a623d, #70452d);
+    border: 8px solid #50301f;
+    border-radius: 15px 15px 5px 5px;
+    box-shadow: 0 12px 20px rgba(0,0,0,.25);
+    transform-origin: left center;
+    transition: transform .8s ease, opacity .5s ease;
+}
+
+.door:before {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: gold;
+    border-radius: 50%;
+    right: 18px;
+    top: 50%;
+}
+
+.door-number {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #ffe8a8;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.door.open {
+    transform: perspective(500px) rotateY(-75deg);
+}
+
+.door:nth-child(1) { left: 550px; }
+.door:nth-child(2) { left: 1250px; }
+.door:nth-child(3) { left: 1950px; }
+.door:nth-child(4) { left: 2650px; }
+
+/* Девочка */
+
+#girl {
+    position: absolute;
+    left: 100px;
+    bottom: calc(12% + 120px);
+    width: 100px;
+    height: 180px;
+    z-index: 10;
+    transition: left 1s ease;
+}
+
+/* Голова */
+
+.head {
+    position: absolute;
+    width: 75px;
+    height: 78px;
+    left: 12px;
+    top: 0;
+    background: #f2c19b;
+    border-radius: 48% 48% 45% 45%;
+    border: 3px solid #d89d73;
+    z-index: 3;
+}
+
+/* Волосы */
+
+.hair {
+    position: absolute;
+    width: 82px;
+    height: 62px;
+    left: 8px;
+    top: -12px;
+    background: #f4cf55;
+    border-radius: 50% 55% 30% 30%;
+    z-index: 4;
+}
+
+.hair:before,
+.hair:after {
+    content: "";
+    position: absolute;
+    background: #f4cf55;
+}
+
+.hair:before {
+    width: 30px;
+    height: 75px;
+    left: -4px;
+    top: 25px;
+    border-radius: 20px;
+}
+
+.hair:after {
+    width: 30px;
+    height: 75px;
+    right: -4px;
+    top: 25px;
+    border-radius: 20px;
+}
+
+/* Лицо */
+
+.eye {
+    position: absolute;
+    width: 17px;
+    height: 22px;
+    background: white;
+    border: 2px solid #333;
+    border-radius: 50%;
+    top: 28px;
+}
+
+.eye:after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: #222;
+    border-radius: 50%;
+    left: 4px;
+    top: 6px;
+}
+
+.eye.left {
+    left: 18px;
+}
+
+.eye.right {
+    right: 18px;
+}
+
+.mouth {
+    position: absolute;
+    width: 25px;
+    height: 12px;
+    border-bottom: 3px solid #8c3d3d;
+    border-radius: 50%;
+    left: 25px;
+    top: 55px;
+}
+
+/* Тело */
+
+.body {
+    position: absolute;
+    width: 62px;
+    height: 75px;
+    left: 19px;
+    top: 73px;
+    background: #ff7db5;
+    border-radius: 25px 25px 12px 12px;
+    border: 3px solid #d95f94;
+}
+
+/* Руки */
+
+.arm {
+    position: absolute;
+    width: 20px;
+    height: 62px;
+    background: #f2c19b;
+    border-radius: 15px;
+    top: 80px;
+}
+
+.arm.left {
+    left: 8px;
+    transform: rotate(12deg);
+}
+
+.arm.right {
+    right: 8px;
+    transform: rotate(-12deg);
+}
+
+/* Ноги */
+
+.leg {
+    position: absolute;
+    width: 22px;
+    height: 55px;
+    background: #f2c19b;
+    border-radius: 15px;
+    top: 140px;
+}
+
+.leg.left {
+    left: 25px;
+}
+
+.leg.right {
+    right: 25px;
+}
+
+/* Анимация ходьбы */
+
+.walking .leg.left {
+    animation: walk1 .35s infinite alternate;
+}
+
+.walking .leg.right {
+    animation: walk2 .35s infinite alternate;
+}
+
+.walking .arm.left {
+    animation: arm1 .35s infinite alternate;
+}
+
+.walking .arm.right {
+    animation: arm2 .35s infinite alternate;
+}
+
+@keyframes walk1 {
+    from { transform: rotate(15deg); }
+    to { transform: rotate(-15deg); }
+}
+
+@keyframes walk2 {
+    from { transform: rotate(-15deg); }
+    to { transform: rotate(15deg); }
+}
+
+@keyframes arm1 {
+    from { transform: rotate(15deg); }
+    to { transform: rotate(-15deg); }
+}
+
+@keyframes arm2 {
+    from { transform: rotate(-15deg); }
+    to { transform: rotate(15deg); }
+}
+
+/* Панель вопроса */
+
+#questionBox {
+    position: absolute;
+    left: 50%;
+    top: 25px;
+    transform: translateX(-50%);
+    width: min(92%, 700px);
+    padding: 20px;
+    background: rgba(255,255,255,.95);
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+    z-index: 50;
+    text-align: center;
+}
+
+#question {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.answer {
+    border: none;
+    padding: 14px;
+    border-radius: 15px;
+    background: #f1e6ff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.answer:hover {
+    transform: translateY(-2px);
+    background: #dfc9ff;
+}
+
+.answer.correct {
+    background: #8be28b;
+}
+
+.answer.wrong {
+    background: #ff9b9b;
+}
+
+/* Сообщения */
+
+#message {
+    position: absolute;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    z-index: 60;
+    padding: 12px 20px;
+    border-radius: 15px;
+    background: rgba(0,0,0,.7);
+    color: white;
+    font-size: 17px;
+    opacity: 0;
+    transition: .3s;
+    text-align: center;
+    max-width: 90%;
+}
+
+#message.show {
+    opacity: 1;
+}
+
+/* Финал */
+
+#finish {
+    position: fixed;
+    inset: 0;
+    background: rgba(25,20,45,.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+}
+
+.finish-card {
+    width: min(90%, 600px);
+    padding: 40px 30px;
+    background: white;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    animation: appear .7s ease;
+}
+
+.finish-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #d94b92;
+}
+
+.finish-text {
+    font-size: 20px;
+    line-height: 1.5;
+    color: #333;
+}
+
+@keyframes appear {
+    from {
+        transform: scale(.7);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.restart {
+    margin-top: 25px;
+    border: none;
+    background: #ff72ad;
+    color: white;
+    padding: 14px 25px;
+    border-radius: 15px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+/* Мобильная версия */
+
+@media (max-width: 600px) {
+
+    #questionBox {
+        top: 10px;
+        padding: 14px;
+    }
+
+    #question {
+        font-size: 17px;
+    }
+
+    .answer {
+        font-size: 14px;
+        padding: 11px 7px;
+    }
+
+    .finish-title {
+        font-size: 24px;
+    }
+
+    .finish-text {
+        font-size: 17px;
+    }
+
+    .door {
+        width: 120px;
+        height: 200px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <div id="questionBox">
+        <div id="question"></div>
+
+        <div class="answers">
+            <button class="answer"></button>
+            <button class="answer"></button>
+            <button class="answer"></button>
+            <button class="answer"></button>
+        </div>
+    </div>
+
+    <div id="world">
+
+        <div class="ground"></div>
+        <div class="path"></div>
+
+        <div class="door">
+            <div class="door-number">🚪</div>
+        </div>
+
+        <div class="door">
+            <div class="door-number">🚪</div>
+        </div>
+
+        <div class="door">
+            <div class="door-number">🚪</div>
+        </div>
+
+        <div class="door">
+            <div class="door-number">🚪</div>
+        </div>
+
+        <!-- Цветочек -->
+
+        <div id="girl">
+
+            <div class="hair"></div>
+
+            <div class="head">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="mouth"></div>
+            </div>
+
+            <div class="body"></div>
+
+            <div class="arm left"></div>
+            <div class="arm right"></div>
+
+            <div class="leg left"></div>
+            <div class="leg right"></div>
+
+        </div>
+
+    </div>
+
+    <div id="message"></div>
+
+</div>
+
+<!-- Финал -->
+
+<div id="finish">
+
+    <div class="finish-card">
+
+        <div class="finish-title">
+            🌸 Цветочек, лабиринт пройден! 😘
+        </div>
+
+        <div class="finish-text">
+            Ну вот, теперь ты знаешь меня ещё немного лучше)<br><br>
+
+            Но я решил оставить тебе последнее задание…<br><br>
+
+            <strong>
+                Что общего у лабиринта и судьбы? 🤔
+            </strong>
+        </div>
+
+        <button class="restart" onclick="restartGame()">
+            Пройти ещё раз 🔄
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+    {
+        q: "Дашуль, как думаешь, какой завтрак мне нравится больше всего?",
+        a: [
+            "Яичница с беконом 🥓",
+            "Сырники со сметаной",
+            "Бутерброды и кофе — быстро и без заморочек",
+            "Стейк. Потому что почему бы и нет 😂"
+        ],
+        correct: 2
+    },
+
+    {
+        q: "Как думаешь, какую машину я бы выбрал себе?",
+        a: [
+            "BMW",
+            "Mercedes",
+            "Porsche",
+            "MINI Cooper 🚗"
+        ],
+        correct: 1
+    },
+
+    {
+        q: "Дашуль, как меня можно реально обидеть?",
+        a: [
+            "Игнорировать меня",
+            "Обзываться 😂",
+            "Не верить мне",
+            "Сказать: «Ты неправ» — и уйти 😂"
+        ],
+        correct: 3
+    },
+
+    {
+        q: "Как думаешь, что может рассмешить меня даже в плохом настроении?",
+        a: [
+            "Глупая шутка от близкого человека",
+            "Чужой нелепый фейл 😂",
+            "Мем, который идеально попал в ситуацию",
+            "Ты, если начнёшь меня специально бесить"
+        ],
+        correct: 0
+    },
+
+    {
+        q: "Что мне больше всего нравится в девушках?",
+        a: [
+            "Красивые глаза",
+            "Чувство юмора",
+            "Доброта и характер ❤️",
+            "Когда девушка умеет одновременно быть нежной и выносить мне мозг 😂"
+        ],
+        correct: 2
+    },
+
+    {
+        q: "Как думаешь, какой отдых для меня идеальный?",
+        a: [
+            "Море, солнце и вообще ничего не делать",
+            "Поехать куда-нибудь на машине без чёткого плана 🚗",
+            "Дом, вкусная еда, фильм и любимый человек",
+            "Активный отдых, приключения и куча впечатлений"
+        ],
+        correct: 0
+    },
+
+    {
+        q: "Дашуль, что я выберу: спокойный вечер дома или спонтанную поездку куда-нибудь?",
+        a: [
+            "Спокойный вечер дома ❤️",
+            "Спонтанную поездку",
+            "Сначала сказать, что хочу остаться дома, а потом через час самому предложить куда-нибудь поехать 😂",
+            "Мне всё равно, главное — с тобой"
+        ],
+        correct: 3
+    },
+
+    {
+        q: "Как думаешь, какой подарок меня действительно порадует?",
+        a: [
+            "Что-нибудь с юмором 😂",
+            "Аниме-фигурка",
+            "Трусы 🩲",
+            "Любой, потому что главное — внимание ❤️"
+        ],
+        correct: 3
+    },
+
+    {
+        q: "Что меня быстрее всего может выбесить? 😂",
+        a: [
+            "Когда человек долго отвечает",
+            "Когда меня не слушают",
+            "Когда всё идёт не по плану",
+            "Когда человек говорит одно, а делает совершенно другое"
+        ],
+        correct: 1
+    },
+
+    {
+        q: "Дашуль, как думаешь, о чём я мечтаю больше всего?",
+        a: [
+            "О хорошей работе 💼",
+            "О тебе ❤️",
+            "О бананах 🍌",
+            "Побывать на встрече анимешников 🎌"
+        ],
+        correct: 1
+    }
+
+];
+
+let currentQuestion = 0;
+
+const questionBox = document.getElementById("questionBox");
+const question = document.getElementById("question");
+const answers = document.querySelectorAll(".answer");
+const girl = document.getElementById("girl");
+const world = document.getElementById("world");
+const message = document.getElementById("message");
+const finish = document.getElementById("finish");
+const doors = document.querySelectorAll(".door");
+
+function showQuestion() {
+
+    if (currentQuestion >= questions.length) {
+        finishGame();
+        return;
+    }
+
+    const item = questions[currentQuestion];
+
+    question.textContent = item.q;
+
+    answers.forEach((button, index) => {
+
+        button.textContent = item.a[index];
+
+        button.className = "answer";
+
+        button.disabled = false;
+
+        button.onclick = () => checkAnswer(index);
+
+    });
+
+}
+
+function checkAnswer(index) {
+
+    const correct = questions[currentQuestion].correct;
+
+    answers.forEach(button => {
+        button.disabled = true;
+    });
+
+    if (index === correct) {
+
+        answers[index].classList.add("correct");
+
+        showMessage("Правильно! 😏");
+
+        openDoor();
+
+    } else {
+
+        answers[index].classList.add("wrong");
+
+        showMessage(getWrongMessage());
+
+        setTimeout(() => {
+
+            answers.forEach(button => {
+                button.classList.remove("wrong");
+                button.disabled = false;
+            });
+
+        }, 1000);
+    }
+}
+
+function getWrongMessage() {
+
+    const messages = [
+        "Не-а 😏 Давай ещё раз.",
+        "Цветочек, ты серьёзно? 😂",
+        "Кажется, ты меня пока не настолько хорошо знаешь 😁",
+        "Попробуй ещё раз 👀",
+        "Неправильно! Но я дам тебе второй шанс 😘",
+        "Хитро… но нет 😂"
+    ];
+
+    return messages[Math.floor(Math.random() * messages.length)];
+}
+
+function showMessage(text) {
+
+    message.textContent = text;
+
+    message.classList.add("show");
+
+    setTimeout(() => {
+        message.classList.remove("show");
+    }, 1800);
+
+}
+
+function openDoor() {
+
+    const doorIndex = currentQuestion % doors.length;
+
+    const door = doors[doorIndex];
+
+    door.classList.add("open");
+
+    girl.classList.add("walking");
+
+    const targetLeft = 600 + currentQuestion * 330;
+
+    setTimeout(() => {
+
+        girl.style.left = targetLeft + "px";
+
+        const cameraPosition = Math.max(
+            0,
+            targetLeft - window.innerWidth * 0.35
+        );
+
+        world.style.transform =
+            `translateX(-${cameraPosition}px)`;
+
+    }, 300);
+
+    setTimeout(() => {
+
+        girl.classList.remove("walking");
+
+        currentQuestion++;
+
+        showQuestion();
+
+    }, 1300);
+
+}
+
+function finishGame() {
+
+    questionBox.style.display = "none";
+
+    message.classList.remove("show");
+
+    finish.style.display = "flex";
+
+}
+
+function restartGame() {
+
+    currentQuestion = 0;
+
+    finish.style.display = "none";
+
+    questionBox.style.display = "block";
+
+    girl.style.left = "100px";
+
+    world.style.transform = "translateX(0)";
+
+    doors.forEach(door => {
+        door.classList.remove("open");
+    });
+
+    showQuestion();
+
+}
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
